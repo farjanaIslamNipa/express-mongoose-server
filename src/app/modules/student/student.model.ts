@@ -1,12 +1,14 @@
 import { Schema, model } from 'mongoose';
 import {
-  Guardian,
-  LocalGuardian,
-  Student,
-  UserName,
+  TGuardian,
+  TLocalGuardian,
+  TStudent,
+  StudentMethods,
+  StudentModel,
+  TUserName,
 } from './student.interface';
 
-const userNameSchema = new Schema<UserName>({
+const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     trim: true,
@@ -28,7 +30,7 @@ const userNameSchema = new Schema<UserName>({
   },
 });
 
-const guardianNameSchema = new Schema<Guardian>({
+const guardianNameSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
     required: [true, "Father's name is required"],
@@ -57,7 +59,7 @@ const guardianNameSchema = new Schema<Guardian>({
   },
 });
 
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
   name: { type: String, required: [true, 'Local guardian name is required'] },
   occupation: {
     type: String,
@@ -73,7 +75,7 @@ const localGuardianSchema = new Schema<LocalGuardian>({
     required: [true, 'Local guardian address is required'],
   },
 });
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
   name: {type: userNameSchema, required: true},
   gender: {
@@ -104,4 +106,11 @@ const studentSchema = new Schema<Student>({
   },
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+
+// creating a custom instance method
+// studentSchema.methods.isStudentExist = async function(id: string) {
+//   const existingUser = await Student.findOne({id})
+//   return existingUser;
+// }
+
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);
