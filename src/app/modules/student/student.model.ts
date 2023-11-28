@@ -7,8 +7,7 @@ import {
   StudentModel,
   TUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt'
-import config from '../../config';
+
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -79,7 +78,6 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 });
 const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
-  password: {type: String, required: true},
   name: {type: userNameSchema, required: true},
   gender: {
     type: String,
@@ -118,19 +116,6 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
 studentSchema.virtual('fullName').get(function(){
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
 })
-
-studentSchema.pre('save', async function(next){
-
-  //eslint-disable-next-line
-  const user = this;
-  user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
-next()
-})
-
-// studentSchema.post('save', function(doc, next){
-//   doc.password = '';
-//   next()
-// })
 
 // Query middleware
 studentSchema.pre('find', function(next){
