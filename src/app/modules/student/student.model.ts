@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 import {
   TGuardian,
   TLocalGuardian,
@@ -78,6 +78,12 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 });
 const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
+  user: { 
+    type: Schema.Types.ObjectId, 
+    required: [true, 'User id is required'], 
+    unique: true,
+    ref: 'User'
+  },
   name: {type: userNameSchema, required: true},
   gender: {
     type: String,
@@ -132,10 +138,11 @@ studentSchema.pre('aggregate', function(next){
   next()
 })
 
-// creating a custom instance method
-studentSchema.methods.isStudentExist = async function(id: string) {
+// creating a custom static method
+studentSchema.statics.isStudentExist = async function(id: string){
   const existingUser = await Student.findOne({id})
   return existingUser;
 }
+
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
