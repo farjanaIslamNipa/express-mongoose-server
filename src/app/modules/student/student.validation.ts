@@ -12,7 +12,7 @@ const userNameValidationSchema = z.object({
 });
 
 // Define Zod schema for Guardian
-const guardianNameValidationSchema = z.object({
+const guardianValidationSchema = z.object({
   fatherName: z.string().min(1, { message: "Father's name must be at least 1 character long" }),
   fatherOccupation: z.string().min(1, { message: "Father's occupation must be at least 1 character long" }),
   fatherContactNo: z.string().trim().min(1, { message: "Father's contact number must be at least 1 character long" }),
@@ -30,23 +30,26 @@ const localGuardianValidationSchema = z.object({
 });
 
 // Define Zod schema for Student
-const studentValidationSchema = z.object({
-  id: z.string(),
-  password: z.string(),
-  name: userNameValidationSchema,
-  gender: z.enum(['male', 'female']),
-  dateOfBirth: z.string().optional(),
-  email: z.string().email({ message: 'Invalid email format' }),
-  contactNo: z.string().min(1, { message: 'Contact number must be at least 1 character long' }),
-  emergencyContactNo: z.string().trim().min(1, { message: 'Emergency contact number must be at least 1 character long' }),
-  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']).optional(),
-  presentAddress: z.string().min(1, { message: 'Present address must be at least 1 character long' }),
-  permanentAddress: z.string().min(1, { message: 'Permanent address must be at least 1 character long' }),
-  guardian: guardianNameValidationSchema,
-  localGuardian: localGuardianValidationSchema,
-  profileImg: z.string().optional(),
-  isActive: z.enum(['active', 'blocked']).default('active'),
-  isDeleted: z.boolean()
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string(),
+    student: z.object({
+    name: userNameValidationSchema,
+    gender: z.enum(['male', 'female']),
+    dateOfBirth: z.date().optional(),
+    email: z.string().email({ message: 'Invalid email format' }),
+    contactNo: z.string().min(1, { message: 'Contact number must be at least 1 character long' }),
+    emergencyContactNo: z.string().trim().min(1, { message: 'Emergency contact number must be at least 1 character long' }),
+    bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']).optional(),
+    presentAddress: z.string().min(1, { message: 'Present address must be at least 1 character long' }),
+    permanentAddress: z.string().min(1, { message: 'Permanent address must be at least 1 character long' }),
+    guardian: guardianValidationSchema,
+    localGuardian: localGuardianValidationSchema,
+    profileImg: z.string().optional()
+    })
+  })
 });
 
-export default studentValidationSchema;
+export const studentValidations = {
+  createStudentValidationSchema,
+};
