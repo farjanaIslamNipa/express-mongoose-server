@@ -9,7 +9,7 @@ const createAcademicFaculty = catchAsync(async(req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Academic Faculty created successfully',
+    message: 'New Academic Faculty created successfully',
     data: result
   })
 })
